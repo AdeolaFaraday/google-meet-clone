@@ -1,5 +1,5 @@
 <script setup>
-import Home from "./screen/Home.vue";
+import { RouterView } from "vue-router";
 import AgoraRTC from "agora-rtc-sdk-ng";
 
 AgoraRTC.onAutoplayFailed = () => {
@@ -17,7 +17,7 @@ AgoraRTC.onAutoplayFailed = () => {
 </script>
 
 <template>
-  <Home />
+  <RouterView />
 </template>
 
 <style scoped></style>
