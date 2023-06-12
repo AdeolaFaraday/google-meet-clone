@@ -1,7 +1,11 @@
-<script setup></script>
+<script setup>
+import Navigation from "../components/common/navigation/Navigation.vue";
+</script>
 
 <template>
-  <div>This will be the start screen</div>
+  <div>
+    <Navigation />
+  </div>
 </template>
 
 <style lang="scss" scoped></style>
