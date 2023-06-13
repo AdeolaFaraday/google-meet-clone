@@ -32,7 +32,7 @@ import Text from "../common/text/Text.vue";
     @apply leading-4;
   }
   .imageContainer {
-    @apply h-10 w-10;
+    @apply h-9 w-9;
   }
   .image {
     @apply w-full h-full rounded-full;

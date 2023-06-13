@@ -16,7 +16,7 @@ import UserProfileCardSmall from "../../join-screen/UserProfileCardSmall.vue";
 
 @layer components {
   .container {
-    @apply flex items-center justify-between min-w-full p-4;
+    @apply flex items-center justify-between min-w-full p-3 absolute;
   }
 }
 </style>
