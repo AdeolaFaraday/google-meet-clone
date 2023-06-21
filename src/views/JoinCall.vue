@@ -1,5 +1,6 @@
 <script setup>
 import Navigation from "../components/common/navigation/Navigation.vue";
+import TextComponent from "../components/join-screen/TextComponent.vue";
 import VideoComponent from "../components/join-screen/VideoComponent.vue";
 </script>
 
@@ -8,7 +9,9 @@ import VideoComponent from "../components/join-screen/VideoComponent.vue";
     <Navigation />
     <div class="actionContainer">
       <VideoComponent />
-      <div class="textContainer"></div>
+      <div class="textContainer">
+        <TextComponent />
+      </div>
     </div>
   </div>
 </template>

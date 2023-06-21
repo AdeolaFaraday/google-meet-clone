@@ -21,7 +21,9 @@ import Text from "../common/text/Text.vue";
     @apply flex items-center gap-3 w-24;
   }
   .text {
-    @apply text-2xl;
+    @apply text-3xl font-normal;
+    font-family: "Roboto";
+    color: #5f6368;
   }
 }
 </style>

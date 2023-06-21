@@ -16,8 +16,9 @@
     flex: 3;
   }
   .videoContainer {
-    @apply w-4/5 rounded-lg;
-    height: 55%;
+    @apply rounded-lg;
+    height: 61%;
+    width: 88%;
     background-color: rgb(32, 33, 36);
   }
 }

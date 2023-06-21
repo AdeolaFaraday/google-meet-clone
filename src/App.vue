@@ -20,6 +20,8 @@ AgoraRTC.onAutoplayFailed = () => {
   <RouterView />
 </template>
 
-<style scoped></style>
+<style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+</style>
 
 <!-- https://docs.agora.io/en/video-calling/develop/product-workflow?platform=web -->
