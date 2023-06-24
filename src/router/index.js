@@ -12,7 +12,7 @@ const router = createRouter({
     {
       path: "/call",
       name: "Call",
-      component: () => import("../views/Home.vue"),
+      component: () => import("../views/Call.vue"),
     },
   ],
 });
