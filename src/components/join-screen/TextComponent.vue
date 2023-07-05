@@ -1,14 +1,16 @@
 <script setup>
 import AgoraRTC from "agora-rtc-sdk-ng";
 import Button from "../common/button/Button.vue";
-import { reactive } from "vue";
+import { onMounted, reactive } from "vue";
 import IconUpload from "../icons/IconUpload.vue";
 import router from "../../router";
 import OtherJoiningOption from "./OtherJoiningOption.vue";
 import IconPhoneCall from "../icons/IconPhoneCall.vue";
 import IconComputer from "../icons/IconComputer.vue";
+import { v4 as uuidv4 } from "uuid";
+import { agoraEngineGlobal } from "../../api/users/agora";
 
-const agoraEngine = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+const agoraEngine = agoraEngineGlobal
 
 let options = reactive({
   // Pass your App ID here.
@@ -17,12 +19,21 @@ let options = reactive({
   channel: "first-channel",
   // Pass your temp token here.
   token:
-    "006e9b38caaab77438fa64316dad3bbda81IABYJPpfZDJYhgnzPr3Yg1xidg2q/f7lRxNADT5E9dlCr1Z0AF8AAAAAEACk9HIB82SXZAEAAQCDIZZk",
+    "006e9b38caaab77438fa64316dad3bbda81IAAK8EhtsDOrFKQuUEqKatZ/dBVKbJY+my8S7dSMB2ble1Z0AF8AAAAAEADGDmwF94imZAEAAQCHRaVk",
   // Set the user ID.
   uid: 0,
   ExpireTime: 3600,
   // The base URL to your token server. For example, https://agora-token-service-production-92ff.up.railway.app".
   serverUrl: "https://agora-token-service-production-ee00.up.railway.app",
+});
+
+onMounted(() => {
+  const storedUid = localStorage.getItem("uId");
+  if (storedUid) {
+    options.uid = storedUid;
+  } else {
+    localStorage.setItem("uId", uuidv4().split('-').join(''));
+  }
 });
 
 const handleJoinChannel = async () => {

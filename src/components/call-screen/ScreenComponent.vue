@@ -3,6 +3,8 @@ import AgoraRTC from "agora-rtc-sdk-ng";
 import { onMounted, reactive, ref } from "vue";
 import Button from "../common/button/Button.vue";
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
+import { agoraEngineGlobal } from "../../api/users/agora";
 
 let isSharingEnabled = ref(false);
 let isMuteVideo = ref(false);
@@ -10,7 +12,7 @@ let isMuteVideo = ref(false);
 const localVideo = ref(null);
 const localVideoStream = ref(null);
 
-const agoraEngine = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+const agoraEngine = agoraEngineGlobal
 
 let channelParameters = reactive({
   // A variable to hold a local audio track.
@@ -33,7 +35,7 @@ let options = reactive({
   channel: "first-channel",
   // Pass your temp token here.
   token:
-    "006e9b38caaab77438fa64316dad3bbda81IAAKGYGuHLNn2NRrPBewujgXFfnWj/n576b767d7vwTPGVZ0AF8AAAAAEADehI8A+QmYZAEAAQCJxpZk",
+    "006e9b38caaab77438fa64316dad3bbda81IAAK8EhtsDOrFKQuUEqKatZ/dBVKbJY+my8S7dSMB2ble1Z0AF8AAAAAEADGDmwF94imZAEAAQCHRaVk",
   // Set the user ID.
   uid: 0,
   ExpireTime: 3600,
@@ -92,6 +94,8 @@ onMounted(() => {
     // Subscribe to the remote user when the SDK triggers the "user-published" event.
     await agoraEngine.subscribe(user, mediaType);
 
+    console.log("got hereeeeeee", { video: user.videoTrack });
+
     if (mediaType == "video") {
       // Retrieve the remote video track.
       localVideo.value.srcObject = new MediaStream([
@@ -112,9 +116,15 @@ onMounted(() => {
       // channelParameters.remoteVideoTrack.play(remotePlayerContainer);
     }
   });
-  // FetchToken().then((token) => {
-  //   options.token = token;
-  // });
+  const storedUid = localStorage.getItem("uId");
+  if (storedUid) {
+    options.uid = storedUid;
+  } else {
+    localStorage.setItem("uId", uuidv4().split('-').join(''));
+  }
+  FetchToken().then((token) => {
+    options.token = token;
+  });
   // agoraEngine.on("token-privilege-will-expire", async function () {
   //   options.token = await FetchToken();
   //   await agoraEngine.renewToken(options.token);
@@ -123,12 +133,12 @@ onMounted(() => {
 
 const handleClick = async () => {
   if (!isSharingEnabled.value) {
-    await agoraEngine.join(
-      options.appId,
-      options.channel,
-      options.token,
-      options.uid
-    );
+    // await agoraEngine.join(
+    //   options.appId,
+    //   options.channel,
+    //   options.token,
+    //   options.uid
+    // );
     // Create a screen track for screen sharing.
     channelParameters.screenTrack = await AgoraRTC.createScreenVideoTrack();
     // Replace the video track with the screen track.
