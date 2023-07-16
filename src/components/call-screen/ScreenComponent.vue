@@ -5,6 +5,7 @@ import Button from "../common/button/Button.vue";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { agoraEngineGlobal } from "../../api/users/agora";
+import Text from "../common/text/Text.vue";
 
 let isSharingEnabled = ref(false);
 let isMuteVideo = ref(false);
@@ -12,7 +13,7 @@ let isMuteVideo = ref(false);
 const localVideo = ref(null);
 const localVideoStream = ref(null);
 
-const agoraEngine = agoraEngineGlobal
+const agoraEngine = agoraEngineGlobal;
 
 let channelParameters = reactive({
   // A variable to hold a local audio track.
@@ -35,7 +36,7 @@ let options = reactive({
   channel: "first-channel",
   // Pass your temp token here.
   token:
-    "006e9b38caaab77438fa64316dad3bbda81IAAK8EhtsDOrFKQuUEqKatZ/dBVKbJY+my8S7dSMB2ble1Z0AF8AAAAAEADGDmwF94imZAEAAQCHRaVk",
+    "006e9b38caaab77438fa64316dad3bbda81IAAlzhl9ZppG1S7EFhcyHNXhNrcngx4Ly4XrUEF9T1i7o1Z0AF8AAAAAEAAs2LEFKeOzZAEAAQC5n7Jk",
   // Set the user ID.
   uid: 0,
   ExpireTime: 3600,
@@ -120,7 +121,7 @@ onMounted(() => {
   if (storedUid) {
     options.uid = storedUid;
   } else {
-    localStorage.setItem("uId", uuidv4().split('-').join(''));
+    localStorage.setItem("uId", uuidv4().split("-").join(""));
   }
   FetchToken().then((token) => {
     options.token = token;
@@ -171,7 +172,14 @@ const handleClick = async () => {
 </script>
 <template>
   <div class="screenContainer">
-    <video ref="localVideo" autoplay class="userVideoScreen"></video>
+    <div class="videoContainer">
+      <video ref="localVideo" autoplay class="userVideoScreen"></video>
+    </div>
+    <div class="profileContainer">
+      <div class="avatarContainer">
+        <Text class="avatarText">A</Text>
+      </div>
+    </div>
     <Button
       class="shareBtn"
       variant="primary"
@@ -189,11 +197,26 @@ const handleClick = async () => {
 
 @layer components {
   .screenContainer {
-    @apply h-screen w-screen;
+    @apply h-screen w-screen flex items-center justify-center gap-5;
     /* background-color: red; */
   }
+  .videoContainer {
+    @apply w-3/5 h-3/4 rounded-lg;
+  }
   .userVideoScreen {
-    @apply h-screen w-screen object-cover absolute;
+    @apply h-full w-full object-contain rounded-lg;
+    background-color: black;
+  }
+  .profileContainer {
+    @apply w-1/3 h-3/5 rounded-lg flex justify-center items-center;
+    background-color: #3c4043;
+  }
+  .avatarContainer {
+    @apply w-36	h-36 rounded-full flex items-center justify-center;
+    background-color: #c5221f;
+  }
+  .avatarText {
+    @apply text-7xl text-white;
   }
   .shareBtn {
     @apply absolute bottom-5;

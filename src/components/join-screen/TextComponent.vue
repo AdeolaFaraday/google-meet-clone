@@ -19,7 +19,7 @@ let options = reactive({
   channel: "first-channel",
   // Pass your temp token here.
   token:
-    "006e9b38caaab77438fa64316dad3bbda81IAAK8EhtsDOrFKQuUEqKatZ/dBVKbJY+my8S7dSMB2ble1Z0AF8AAAAAEADGDmwF94imZAEAAQCHRaVk",
+    "006e9b38caaab77438fa64316dad3bbda81IABhuaTdfCGgJD6//UTH7J2b02NX6UBZ33FmJMKHblkwOFZ0AF+379yDEAB0AwUCleKzZAEAAQAln7Jk",
   // Set the user ID.
   uid: 0,
   ExpireTime: 3600,
