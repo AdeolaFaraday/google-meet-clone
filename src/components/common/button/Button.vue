@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import IconCircleAnimate from "../../icons/IconCircleAnimate.vue";
 
 const hover = ref(false);
 const props = defineProps({
@@ -29,7 +30,8 @@ const border =
     }"
     class="button"
   >
-    <slot></slot>
+    <slot v-if="!props.loading"></slot>
+    <IconCircleAnimate v-else />
   </div>
 </template>
 

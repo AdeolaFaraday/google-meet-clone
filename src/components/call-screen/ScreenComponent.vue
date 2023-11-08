@@ -2,9 +2,9 @@
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { onMounted, reactive, ref } from "vue";
 import Button from "../common/button/Button.vue";
-import axios from "axios";
+import CallActionButtons from "./CallActionButtons.vue";
 import { v4 as uuidv4 } from "uuid";
-import { agoraEngineGlobal } from "../../api/users/agora";
+import { FetchToken, agoraEngineGlobal } from "../../api/users/agora";
 import Text from "../common/text/Text.vue";
 
 let isSharingEnabled = ref(false);
@@ -27,6 +27,7 @@ let channelParameters = reactive({
   remoteVideoTrack: null,
   // A variable to hold the remote user id.s
   remoteUid: null,
+  userList: [1],
 });
 
 let options = reactive({
@@ -35,10 +36,9 @@ let options = reactive({
   // Set the channel name.
   channel: "first-channel",
   // Pass your temp token here.
-  token:
-    "006e9b38caaab77438fa64316dad3bbda81IAAlzhl9ZppG1S7EFhcyHNXhNrcngx4Ly4XrUEF9T1i7o1Z0AF8AAAAAEAAs2LEFKeOzZAEAAQC5n7Jk",
+  token: "",
   // Set the user ID.
-  uid: 0,
+  uid: localStorage.getItem("uId"),
   ExpireTime: 3600,
   // The base URL to your token server. For example, https://agora-token-service-production-92ff.up.railway.app".
   serverUrl: "https://agora-token-service-production-ee00.up.railway.app",
@@ -67,32 +67,33 @@ const initializeLocalVideoTrack = async () => {
   }
 };
 
-const FetchToken = async () => {
-  return new Promise(function (resolve) {
-    axios
-      .get(
-        options.serverUrl +
-          "/rtc/" +
-          options.channel +
-          "/1/uid/" +
-          options.uid +
-          "/?expiry=" +
-          options.ExpireTime
-      )
-      .then((response) => {
-        console.log(response.data.rtcToken);
-        resolve(response.data.rtcToken);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  });
-};
+// const FetchToken = async () => {
+//   return new Promise(function (resolve) {
+//     axios
+//       .get(
+//         options.serverUrl +
+//           "/rtc/" +
+//           options.channel +
+//           "/1/uid/" +
+//           options.uid +
+//           "/?expiry=" +
+//           options.ExpireTime
+//       )
+//       .then((response) => {
+//         console.log(response.data.rtcToken);
+//         resolve(response.data.rtcToken);
+//       })
+//       .catch((error) => {
+//         console.log(error);
+//       });
+//   });
+// };
 
 onMounted(() => {
   initializeLocalVideoTrack();
   agoraEngine.on("user-published", async (user, mediaType) => {
     // Subscribe to the remote user when the SDK triggers the "user-published" event.
+    console.log({ onUserPublished: true });
     await agoraEngine.subscribe(user, mediaType);
 
     console.log("got hereeeeeee", { video: user.videoTrack });
@@ -123,9 +124,11 @@ onMounted(() => {
   } else {
     localStorage.setItem("uId", uuidv4().split("-").join(""));
   }
-  FetchToken().then((token) => {
-    options.token = token;
-  });
+  if (!options?.token) {
+    FetchToken(options?.uid, options?.channel).then((token) => {
+      options.token = token;
+    });
+  }
   // agoraEngine.on("token-privilege-will-expire", async function () {
   //   options.token = await FetchToken();
   //   await agoraEngine.renewToken(options.token);
@@ -175,18 +178,15 @@ const handleClick = async () => {
     <div class="videoContainer">
       <video ref="localVideo" autoplay class="userVideoScreen"></video>
     </div>
-    <div class="profileContainer">
+    <div
+      v-if="channelParameters?.userList?.length > 1"
+      class="profileContainer"
+    >
       <div class="avatarContainer">
         <Text class="avatarText">A</Text>
       </div>
     </div>
-    <Button
-      class="shareBtn"
-      variant="primary"
-      id="inItScreen"
-      @click="handleClick"
-      >Share Screen</Button
-    >
+    <CallActionButtons @share-screen="handleClick" />
   </div>
 </template>
 
@@ -198,13 +198,13 @@ const handleClick = async () => {
 @layer components {
   .screenContainer {
     @apply h-screen w-screen flex items-center justify-center gap-5;
-    /* background-color: red; */
+    background-color: rgb(32, 33, 36);
   }
   .videoContainer {
     @apply w-3/5 h-3/4 rounded-lg;
   }
   .userVideoScreen {
-    @apply h-full w-full object-contain rounded-lg;
+    @apply h-full w-full object-fill rounded-lg;
     background-color: black;
   }
   .profileContainer {

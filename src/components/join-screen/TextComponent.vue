@@ -1,5 +1,4 @@
 <script setup>
-import AgoraRTC from "agora-rtc-sdk-ng";
 import Button from "../common/button/Button.vue";
 import { onMounted, reactive } from "vue";
 import IconUpload from "../icons/IconUpload.vue";
@@ -8,9 +7,9 @@ import OtherJoiningOption from "./OtherJoiningOption.vue";
 import IconPhoneCall from "../icons/IconPhoneCall.vue";
 import IconComputer from "../icons/IconComputer.vue";
 import { v4 as uuidv4 } from "uuid";
-import { agoraEngineGlobal } from "../../api/users/agora";
+import { FetchToken, agoraEngineGlobal } from "../../api/users/agora";
 
-const agoraEngine = agoraEngineGlobal
+const agoraEngine = agoraEngineGlobal;
 
 let options = reactive({
   // Pass your App ID here.
@@ -18,13 +17,13 @@ let options = reactive({
   // Set the channel name.
   channel: "first-channel",
   // Pass your temp token here.
-  token:
-    "006e9b38caaab77438fa64316dad3bbda81IABhuaTdfCGgJD6//UTH7J2b02NX6UBZ33FmJMKHblkwOFZ0AF+379yDEAB0AwUCleKzZAEAAQAln7Jk",
+  token: "",
   // Set the user ID.
-  uid: 0,
+  uid: localStorage.getItem("uId"),
   ExpireTime: 3600,
   // The base URL to your token server. For example, https://agora-token-service-production-92ff.up.railway.app".
   serverUrl: "https://agora-token-service-production-ee00.up.railway.app",
+  loading: false,
 });
 
 onMounted(() => {
@@ -32,11 +31,17 @@ onMounted(() => {
   if (storedUid) {
     options.uid = storedUid;
   } else {
-    localStorage.setItem("uId", uuidv4().split('-').join(''));
+    localStorage.setItem("uId", uuidv4().split("-").join(""));
+  }
+  if (!options?.token) {
+    FetchToken(options?.uid, options?.channel).then((token) => {
+      options.token = token;
+    });
   }
 });
 
 const handleJoinChannel = async () => {
+  options.loading = true;
   // Join a channel.
   await agoraEngine.join(
     options.appId,
@@ -44,6 +49,7 @@ const handleJoinChannel = async () => {
     options.token,
     options.uid
   );
+  options.loading = false;
   router.push("/call");
   // Create a local audio track from the audio sampled by a microphone.
   // channelParameters.localAudioTrack =
@@ -67,7 +73,7 @@ const handleJoinChannel = async () => {
     <h1 class="text">Meet - Daily Standup</h1>
     <p class="paragraph">No one is here.</p>
     <div class="btnContainer">
-      <Button variant="primary" :onclick="handleJoinChannel">Join now</Button>
+      <Button :loading="options?.loading" variant="primary" :onclick="handleJoinChannel">Join now</Button>
       <Button><IconUpload class="sharebtn" /> Present</Button>
     </div>
     <p class="paragraph">Other joining option</p>
